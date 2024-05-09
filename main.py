@@ -1,5 +1,6 @@
 from pytube import YouTube
 import os
+import ffmpy
 
 
 def download_video(save_path: str, audio_only: bool) -> None:
@@ -11,7 +12,13 @@ def download_video(save_path: str, audio_only: bool) -> None:
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
-    yd.download(save_path)
+    saved_path = yd.download(save_path)
+
+    if audio_only:
+        new_file_name = saved_path.replace('.mp4', '.mp3')
+        ff = ffmpy.FFmpeg(inputs={saved_path: None}, outputs={new_file_name: None})
+        ff.run()
+        os.remove(saved_path)
 
 
 def ask_for_next_video() -> bool:
